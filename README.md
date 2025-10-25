@@ -25,6 +25,13 @@ This project deploys the retail-store-sample-app to AWS EKS using Terraform and 
 4. Run `terraform init`
 5. Run `terraform plan`
 6. Run `terraform apply`
+7. Create VPC with public and private subnets across 2 AZs
+8. Deploy EKS cluster (Kubernetes 1.28)
+9. Configure IAM roles for cluster and node group
+10. Create read-only developer IAM user
+11. Deploy managed node group with 2x t3.medium instances
+
+- Resources: 26 total, optimized for learning environment
 
 ## Variables
 
