@@ -46,3 +46,9 @@ This project deploys the retail-store-sample-app to AWS EKS using Terraform and 
 | ----------------- | ----------------------------- |
 | load_balancer_dns | DNS name of the load balancer |
 | database_endpoint | RDS database endpoint         |
+
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions to automate Terraform deployments.
+See docs/GIT_WORKFLOW.md for branching strategy details.
