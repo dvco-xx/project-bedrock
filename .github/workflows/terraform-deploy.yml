@@ -71,23 +71,7 @@ jobs:
           terraform plan -out=tfplan
 
       - name: Upload Plan Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: terraform/tfplan
-
-      - name: Comment PR with Plan
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && comment.body.includes('Terraform Plan')
-            );
-            const output = `#### Terraform Plan 📋
