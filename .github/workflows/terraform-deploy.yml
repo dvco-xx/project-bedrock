@@ -81,13 +81,9 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const fs = require('fs');
-            const { data: comments } = await github.rest.issues.listComments({
+            github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-            });
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && comment.body.includes('Terraform Plan')
-            );
-            const output = `#### Terraform Plan 📋
+              body: '✅ Terraform plan completed successfully'
+            })
