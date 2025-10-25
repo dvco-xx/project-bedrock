@@ -18,3 +18,11 @@
 
 # OS
 .DS_Store
+
+#sensitive files
+cluster_endpoint.txt
+developer_access_key.txt
+developer_secret_key.txt
+developer-credentials.txt
+aws-account-id.txt
+kubeconfig-developer
