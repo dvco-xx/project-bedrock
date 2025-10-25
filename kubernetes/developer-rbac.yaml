@@ -1,0 +1,56 @@
+# ClusterRole for read-only access
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: developer-readonly
+rules:
+# Pod access
+- apiGroups: [""]
+  resources: ["pods", "pods/logs"]
+  verbs: ["get", "list", "watch"]
+
+# Service access
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "watch"]
+
+# ConfigMap and Secret read access
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list"]
+
+# Deployment access
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
+  verbs: ["get", "list", "watch"]
+
+# Job access
+- apiGroups: ["batch"]
+  resources: ["jobs", "cronjobs"]
+  verbs: ["get", "list", "watch"]
+
+# Events
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch"]
+
+# Namespaces
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list"]
+
+---
+# ClusterRoleBinding to bind the role to the developer IAM user
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: developer-readonly-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: developer-readonly
+subjects:
+# Bind to the developer IAM user
+- kind: User
+  name: arn:aws:iam::301279252933:user/project-bedrock-developer
+  apiGroup: rbac.authorization.k8s.io
