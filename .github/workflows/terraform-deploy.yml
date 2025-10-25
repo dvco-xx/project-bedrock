@@ -75,15 +75,3 @@ jobs:
         with:
           name: tfplan
           path: terraform/tfplan
-
-      - name: Comment PR with Plan
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: '✅ Terraform plan completed successfully'
-            })
