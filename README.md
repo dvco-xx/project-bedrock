@@ -3,17 +3,15 @@ Project Bedrock: My Cloud Engineering Journey
 Deploying Microservices on AWS EKS
 ----------------------------------
 
-Objective
+Objectives
 ----------
-Build cloud infrastructure using Terraform (Infrastructure as Code)
-Deploy the retail-store microservices app to Kubernetes
-Set up automation with GitHub Actions
+- Build cloud infrastructure using Terraform (Infrastructure as Code)
+- Deploy the retail-store microservices app to Kubernetes
+- Set up automation with GitHub Actions
 
 
-Core Features
+Infrastructure
 --------------
-Infrastructure:
-
 1 VPC with public and private subnets across 2 availability zones
 An EKS cluster running Kubernetes 1.28
 2 t3.medium EC2 nodes (auto-scales if required)
@@ -37,21 +35,21 @@ In-cluster databases
 - PostgreSQL and MySQL (for data storage)
 
 
-
 Developer Access
 ----------------
 Create read-only developer user.
 Set up RBAC
 
-# CI/CD Automation
+CI/CD Automation
 ------------------
 
 GitHub Actions workflow (./github/workflows) that automatically validates and deploys the Terraform code
 GitFlow branching - feature branches → develop → main
 All actions run automatically, then deploys to AWS when merged to main branch
 
-# Step-by-Step Journey
+Step-by-Step Journey
 --------------------
+
 Step 1:
 Set Up Local Environent
 -----------------------
@@ -72,14 +70,14 @@ then entering my AWS access key, secret key, and setting the default region to u
 
 Then ran the command, 'aws sts get-caller-identity' to ensure it worked.
 
-# Step 2:
+Step 2:
 Clone Repository (GitHub)
 -------------------------
 I created a GitHub repo for the project and cloned it via https using the command: 'git clone https://github.com/dvco-xx/project-bedrock.git'
 Next, I created the folder structure for the project using:
 mkdir -p terraform kubernetes .github/workflows docs
 
-#  Step 3: 
+Step 3: 
 Building The Infrastructure with Terraform
 ------------------------------------------
 
@@ -102,7 +100,7 @@ After waiting for about 12 mins, it created the following resources:
 - Security groups,
 - IAM roles
 
-# Step 4: 
+Step 4: 
 Connecting to The Kubernetes Cluster
 ------------------------------------
 Once the cluster was created, I updated my kubeconfig using:
@@ -112,7 +110,7 @@ Then checked if it worked with:
 kubectl cluster-info
 kubectl get nodes
 
-# Step 5: 
+Step 5: 
 Deploying The Application
 -------------------------
 The retail-store-sample-app uses Helm charts, so I installed the Helm dependency and created a namespace:
@@ -142,7 +140,7 @@ kubectl get svc ui -n retail-store
 
 I then retrieved the external URL (a39ac26f4e7914b289a285ea450d1d03-1855235943.us-east-1.elb.amazonaws.com) and opened it in my browser. 
 
-# Step 6:
+Step 6:
 Setting Up Developer Access
 ---------------------------
 I created a read-only IAM user and got the developer credentials from Terraform using the commands:
@@ -165,7 +163,7 @@ This enables the developer user to:
 But restricts his/her access to delete or modify anything.
 
 
-# Step 7
+Step 7
 Setting Up the CI/CD Pipeline
 -----------------------------
 I created a GitHub Actions workflow file
@@ -188,31 +186,29 @@ Implementing GitFlow
 --------------------
 I set up efficient branching by creating 2 branches for development and features:
 
-# Created develop branch:
+Created develop branch:
 git checkout -b develop
 git push -u origin develop
 
-# Created features branch:
+Created features branch:
 git checkout -b feature/my-feature
-# make changes
+make changes
 git push -u origin feature/my-feature
-# Create PR to develop
-# Merge after review
-# Create PR from develop to main
-# Merge to main to run CI/CD
+Create PR to develop
+Merge after review
+Create PR from develop to main
+Merge to main to run CI/CD actions
 
-This keeps everything organized and prevents me from accidentally breaking production.
-
-# If you want to try it yourself:
+If you want to try it yourself:
 
 Prerequisites:
 --------------
-bashterraform --version        # Need v1.0+
+terraform --version        # Need v1.0+
 aws --version             # Need v2
 kubectl version --client  # Need recent version
 git --version
 
-The Actual Steps (Summary):
+Actual Steps (Summary):
 ---------------------------
 # 1. Clone and setup
 git clone https://github.com/dvco-xx/project-bedrock.git
