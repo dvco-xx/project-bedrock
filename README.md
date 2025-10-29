@@ -1,7 +1,5 @@
-Project Bedrock: My Cloud Engineering Journey
-
-Deploying Microservices on AWS EKS
-----------------------------------
+# Project Bedrock: Deploying Microservices on AWS EKS With Terraform and Kubernetes
+-----------------------------------------------------------------------------------
 
 Objectives
 ----------
