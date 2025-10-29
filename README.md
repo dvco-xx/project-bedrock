@@ -41,29 +41,30 @@ Set up RBAC
 CI/CD Automation
 ------------------
 
-GitHub Actions workflow (./github/workflows) that automatically validates and deploys the Terraform code
-GitFlow branching - feature branches → develop → main
-All actions run automatically, then deploys to AWS when merged to main branch
+- GitHub Actions workflow (./github/workflows) that automatically validates and deploys the Terraform code
+- GitFlow branching - feature branches → develop → main
+- All actions run automatically, then deploys to AWS when merged to main branch
 
-Step-by-Step Journey
---------------------
+# Step-by-Step Journey
+----------------------
 
 Step 1:
 Set Up Local Environent
 -----------------------
 I started by setting up my local environment by installing the required dependencies,
 by installing terraform using the command 'brew install terraform' (Mac), and kubernetes from the source build via the following command:
-curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
-chmod +x kubectl (gave it the necessary executable permissions)
-sudo mv kubectl /usr/local/bin/ (moved it to the root path)
+
+- curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl"
+- chmod +x kubectl (gave it the necessary executable permissions)
+- sudo mv kubectl /usr/local/bin/ (moved it to the root path)
 
 Then I ran the following commands to check the versions of the installed dependencies,
-terraform version
-aws --version
-kubectl version --client
+- terraform version
+- aws --version
+- kubectl version --client
 
 Next I configured AWS by running:
-aws configure
+- aws configure, 
 then entering my AWS access key, secret key, and setting the default region to us-east-1
 
 Then ran the command, 'aws sts get-caller-identity' to ensure it worked.
@@ -71,20 +72,20 @@ Then ran the command, 'aws sts get-caller-identity' to ensure it worked.
 Step 2:
 Clone Repository (GitHub)
 -------------------------
-I created a GitHub repo for the project and cloned it via https using the command: 'git clone https://github.com/dvco-xx/project-bedrock.git'
+I created a GitHub repo for the project and cloned it via https,
 Next, I created the folder structure for the project using:
-mkdir -p terraform kubernetes .github/workflows docs
+- mkdir -p terraform kubernetes .github/workflows docs
 
 Step 3: 
 Building The Infrastructure with Terraform
 ------------------------------------------
 
 I created the necessary terraform files,
-cd terraform
-touch variables.tf, vpc.tf, iam.tf, eks.tf, outputs.tf
+- cd terraform
+- touch variables.tf, vpc.tf, iam.tf, eks.tf, outputs.tf
 
 Then initialized Terraform using,
-terraform init
+- terraform init
 
 This downloaded all the AWS provider plugins and set up the backend, I then ran 'terraform plan' to review what would be created.
 
@@ -102,11 +103,11 @@ Step 4:
 Connecting to The Kubernetes Cluster
 ------------------------------------
 Once the cluster was created, I updated my kubeconfig using:
-aws eks update-kubeconfig --region us-east-1 --name project-bedrock-cluster
+- aws eks update-kubeconfig --region us-east-1 --name project-bedrock-cluster
 
 Then checked if it worked with:
-kubectl cluster-info
-kubectl get nodes
+- kubectl cluster-info
+- kubectl get nodes
 
 Step 5: 
 Deploying The Application
@@ -114,18 +115,18 @@ Deploying The Application
 The retail-store-sample-app uses Helm charts, so I installed the Helm dependency and created a namespace:
 kubectl create namespace retail-store
 
-Then cloned the app from the awscontainers github repo (https://github.com/aws-containers/retail-store-sample-app):
+Then cloned the app from the awscontainers github repo:
 git clone https://github.com/aws-containers/retail-store-sample-app.git
 
 Then I deployed each microservice using Helm:
-helm install ui retail-store-sample-app/src/ui/chart --namespace retail-store
-helm install catalog retail-store-sample-app/src/catalog/chart --namespace retail-store
-helm install cart retail-store-sample-app/src/cart/chart --namespace retail-store
-helm install orders retail-store-sample-app/src/orders/chart --namespace retail-store
-helm install checkout retail-store-sample-app/src/checkout/chart --namespace retail-store
+- helm install ui retail-store-sample-app/src/ui/chart --namespace retail-store
+- helm install catalog retail-store-sample-app/src/catalog/chart --namespace retail-store
+- helm install cart retail-store-sample-app/src/cart/chart --namespace retail-store
+- helm install orders retail-store-sample-app/src/orders/chart --namespace retail-store
+- helm install checkout retail-store-sample-app/src/checkout/chart --namespace retail-store
 
 
-kubectl get pods -n retail-store --watch
+- kubectl get pods -n retail-store --watch
 
 Then I waited about 2-5 mins for everything to be up and running.
 
@@ -142,23 +143,23 @@ Step 6:
 Setting Up Developer Access
 ---------------------------
 I created a read-only IAM user and got the developer credentials from Terraform using the commands:
-cd terraform
-terraform output developer_username
-terraform output developer_access_key_id
-terraform output developer_secret_access_key
-cd ..
+- cd terraform
+- terraform output developer_username
+- terraform output developer_access_key_id
+- terraform output developer_secret_access_key
 
 Then I created RBAC (role-based access control) to give this user read-only access:
-kubectl apply -f kubernetes/developer-rbac.yaml
+- kubectl apply -f kubernetes/developer-rbac.yaml
 
 and then verified it was set up using:
-kubectl get clusterrole developer-readonly
-kubectl get clusterrolebinding developer-readonly-binding
+- kubectl get clusterrole developer-readonly
+- kubectl get clusterrolebinding developer-readonly-binding
 
 This enables the developer user to:
 - View pods and logs
 - List services and deployments
-But restricts his/her access to delete or modify anything.
+  
+But it restricts his/her access to delete or modify anything.
 
 
 Step 7
@@ -185,71 +186,72 @@ Implementing GitFlow
 I set up efficient branching by creating 2 branches for development and features:
 
 Created develop branch:
-git checkout -b develop
-git push -u origin develop
+- git checkout -b develop
+- git push -u origin develop
 
 Created features branch:
-git checkout -b feature/my-feature
+- git checkout -b feature/my-feature
 make changes
-git push -u origin feature/my-feature
-Create PR to develop
-Merge after review
-Create PR from develop to main
-Merge to main to run CI/CD actions
+- git push -u origin feature/my-feature
+  
+- Create PR to develop
+- Merge after review
+- Create PR from develop to main
+- Merge to main to run CI/CD actions
 
-If you want to try it yourself:
+
+# If you want to try it yourself:
 
 Prerequisites:
 --------------
-terraform --version        # Need v1.0+
-aws --version             # Need v2
-kubectl version --client  # Need recent version
-git --version
+- terraform --version       
+- aws --version            
+- kubectl version --client
+- git --version
 
 Actual Steps (Summary):
----------------------------
+-----------------------
 # 1. Clone and setup
-git clone https://github.com/dvco-xx/project-bedrock.git
-cd project-bedrock
+- git clone https://github.com/dvco-xx/project-bedrock.git
+- cd project-bedrock
 
 # 2. Configure AWS
-aws configure
-# Enter your access key, secret key, region us-east-1
+- aws configure
+Enter your access key, secret key, and region
 
-# 3. Deploy infrastructure (THIS TAKES APPROX. 15 MINUTES)
-cd terraform
-terraform init
-terraform plan
-terraform apply  # Say yes when prompted
-cd ..
+# 3. Deploy infrastructure
+- cd terraform
+- terraform init
+- terraform plan
+- terraform apply  # Say yes when prompted
+- cd ..
 
 # 4. Setup kubectl
-aws eks update-kubeconfig --region us-east-1 --name project-bedrock-cluster
+- aws eks update-kubeconfig --region us-east-1 --name project-bedrock-cluster
 
 # 5. Deploy the app
-kubectl create namespace retail-store
-git clone https://github.com/aws-containers/retail-store-sample-app.git
+- kubectl create namespace retail-store
+- git clone https://github.com/aws-containers/retail-store-sample-app.git
 
 # Deploy each service
-helm install ui retail-store-sample-app/src/ui/chart --namespace retail-store
-helm install catalog retail-store-sample-app/src/catalog/chart --namespace retail-store
-helm install cart retail-store-sample-app/src/cart/chart --namespace retail-store
-helm install orders retail-store-sample-app/src/orders/chart --namespace retail-store
-helm install checkout retail-store-sample-app/src/checkout/chart --namespace retail-store
+- helm install ui retail-store-sample-app/src/ui/chart --namespace retail-store
+- helm install catalog retail-store-sample-app/src/catalog/chart --namespace retail-store
+- helm install cart retail-store-sample-app/src/cart/chart --namespace retail-store
+- helm install orders retail-store-sample-app/src/orders/chart --namespace retail-store
+- helm install checkout retail-store-sample-app/src/checkout/chart --namespace retail-store
 
 # 6. Wait for pods to be ready
-kubectl get pods -n retail-store --watch
+- kubectl get pods -n retail-store --watch
 
 # 7. Make service accessible
-kubectl patch svc ui -n retail-store -p '{"spec": {"type": "LoadBalancer"}}'
+- kubectl patch svc ui -n retail-store -p '{"spec": {"type": "LoadBalancer"}}'
 
 # 8. Get the URL
-kubectl get svc ui -n retail-store -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+- kubectl get svc ui -n retail-store -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
 
 
 What I Learned:
 ---------------
-
 - Terraform is powerful. It helps to define infrastructure as code, version control it, re-use it,
 - Kubernetes is complex - Pods, services, namespaces, RBAC (can get a little confusing),
 - CI/CD eases the stress of manual deployments,
@@ -259,24 +261,19 @@ What I Learned:
 Useful Commands:
 ----------------
 # Terraform
-terraform fmt -recursive        # Fix formatting
-terraform validate             # Check for errors
-terraform state list           # See what's deployed
-terraform destroy              # Delete everything
+- terraform fmt -recursive        # Fix formatting
+- terraform validate             # Check for errors
+- terraform state list           # See what's deployed
+- terraform destroy              # Delete everything
 
 # Kubernetes
-kubectl logs POD_NAME -f -n retail-store    # Follow logs in real-time
-kubectl describe pod POD_NAME -n retail-store  # See pod details
-kubectl exec -it POD_NAME -n retail-store -- /bin/bash  # SSH into a pod
-kubectl get all -n retail-store  # See everything in a namespace
-
-# Git
-git log --oneline              # See commit history
-git diff develop main          # Compare branches
-git status                     # See what changed
+- kubectl logs POD_NAME -f -n retail-store    # Follow logs in real-time
+- kubectl describe pod POD_NAME -n retail-store  # See pod details
+- kubectl exec -it POD_NAME -n retail-store -- /bin/bash  # SSH into a pod
+- kubectl get all -n retail-store  # See everything in a namespace
 
 
-# What's else I could add (and will eventually add in time):
+# Resources I'll eventually add:
 - RDS databases (move from in-cluster to managed databases)
 - ALB and Ingress
 - SSL certificates to improve security
