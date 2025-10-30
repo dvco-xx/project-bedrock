@@ -128,7 +128,7 @@ Then I deployed each microservice using Helm:
 
 - kubectl get pods -n retail-store --watch
 
-Then I waited about 2-5 mins for everything to be up and running.
+Then I waited about 5 mins for everything to be up and running.
 
 Some Issues I ran into: 
 The UI service wasn't accessible at first. I eventually discovered it was a ClusterIP service, not a LoadBalancer. But I fixed it using the command:
@@ -172,9 +172,10 @@ nano .github/workflows/terraform-deploy.yml
 Then I added GitHub Secrets for AWS credentials in the GitHub settings page.
 
 # Some issues I hit along the way:
-- Terraform formatting errors (fixed with terraform fmt)
+- Terraform formatting errors (fixed with 'terraform fmt')
 - Deprecated GitHub Actions versions which prevented the actions file from running (had to update from v3 to v4),
-- Permissions errors on PR comments (just removed the comments section entirely)
+- Erroneously committed sensitive credentials to the repo but deleted and rotated the credentials when I noticed,
+- Permissions errors on PR comments (I just removed the comments section entirely).
 
 Eventually it worked so that now when I create a feature branch and push the code, it creates a PR to the develop branch,
 GitHub Actions automatically runs terraform validate and terraform plan,
@@ -183,13 +184,13 @@ When merged to main, it runs 'terraform apply'
 Step 8: 
 Implementing GitFlow
 --------------------
-I set up efficient branching by creating 2 branches for development and features:
+I set up efficient branching by creating 2 branches for development (develop) and features (features/test-cicd):
 
-Created develop branch:
+Create develop branch:
 - git checkout -b develop
 - git push -u origin develop
 
-Created features branch:
+Create features branch:
 - git checkout -b feature/my-feature
 make changes
 - git push -u origin feature/my-feature
