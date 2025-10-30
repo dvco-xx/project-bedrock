@@ -9,6 +9,7 @@ This guide helps developers configure access to the Project Bedrock EKS cluster.
 - Developer credentials from your administrator
 
 ## Step 1: Configure AWS CLI
+
 ```bash
 aws configure
 
@@ -20,6 +21,7 @@ Default output format: json
 ```
 
 ## Step 2: Update kubeconfig
+
 ```bash
 aws eks update-kubeconfig \
   --region us-east-1 \
@@ -30,6 +32,7 @@ kubectl cluster-info
 ```
 
 ## Step 3: Verify Your Access
+
 ```bash
 # These commands should work (read access)
 kubectl get pods -n retail-store
@@ -44,6 +47,7 @@ kubectl delete pod <pod-name> -n retail-store
 ## What You Can Do (Read-Only Access)
 
 **Allowed:**
+
 - View pods and their logs
 - Describe resources
 - List deployments, services, configmaps
@@ -51,6 +55,7 @@ kubectl delete pod <pod-name> -n retail-store
 - Access multiple namespaces
 
 **Not Allowed:**
+
 - Create or delete resources
 - Modify deployments
 - Scale applications
@@ -58,6 +63,7 @@ kubectl delete pod <pod-name> -n retail-store
 - Delete pods or services
 
 ## Common Commands
+
 ```bash
 # View pods
 kubectl get pods -n retail-store
@@ -87,6 +93,7 @@ kubectl get pods -n retail-store --watch
 ### "error: You must be logged in to the server"
 
 Your credentials are incorrect or expired. Run:
+
 ```bash
 aws configure
 # Re-enter your credentials
@@ -99,12 +106,9 @@ Your IAM user doesn't have access. Contact your administrator.
 ### "The connection to the server was refused"
 
 The cluster might be down or you're in the wrong region. Verify:
+
 ```bash
 aws eks describe-cluster \
   --name project-bedrock-cluster \
   --region us-east-1
 ```
-
-## Need Help?
-
-Please contact me (cluster admin) with the error message and command you ran.

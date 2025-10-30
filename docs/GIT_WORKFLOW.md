@@ -41,9 +41,11 @@ Example: hotfix/security-patch
 Workflow
 
 1. Start a New Feature
-   bash# Update develop
-   git checkout develop
-   git pull origin develop
+
+# Update develop
+
+git checkout develop
+git pull origin develop
 
 # Create feature branch
 
@@ -67,16 +69,17 @@ bash# Go to GitHub and create a PR:
 
 # GitHub Actions will:
 
-# ✅ Run terraform validate
+# Run terraform validate
 
-# ✅ Run terraform format check
+# Run terraform format check
 
-# ✅ Run terraform plan
+# Run terraform plan
 
-# ✅ Comment with plan output
+# Comment with plan output
 
 3. Review & Merge to Develop
-   bash# After code review approval:
+
+# After code review approval:
 
 # 1. Merge PR (squash or regular merge)
 
@@ -85,9 +88,13 @@ bash# Go to GitHub and create a PR:
 # 3. Pull latest develop
 
 git checkout develop
-git pull origin develop 4. Release to Production
-When ready to deploy to production:
-bash# Create PR from develop → main
+git pull origin develop
+
+4. Release to Production
+   When ready to deploy to production:
+
+# Create PR from develop → main
+
 git checkout main
 git pull origin main
 
